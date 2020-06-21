@@ -19,8 +19,8 @@ Example.car = function() {
         element: document.body,
         engine: engine,
         options: {
-            width: 800,
-            height: 600,
+            width: Math.min(document.documentElement.clientWidth, 800),
+            height: Math.min(document.documentElement.clientHeight, 600),
             showAngleIndicator: true,
             showCollisions: true
         }
@@ -42,10 +42,10 @@ Example.car = function() {
     ]);
 
     var scale = 0.9;
-    World.add(world, Composites.car(150, 100, 150 * scale, 30 * scale, 30 * scale));
+    World.add(world, Composites.car(150, 100, 100 * scale, 40 * scale, 30 * scale));
     
     scale = 0.8;
-    World.add(world, Composites.car(350, 300, 150 * scale, 30 * scale, 30 * scale));
+    World.add(world, Composites.car(350, 300, 100 * scale, 40 * scale, 30 * scale));
     
     World.add(world, [
         Bodies.rectangle(200, 150, 400, 20, { isStatic: true, angle: Math.PI * 0.06 }),

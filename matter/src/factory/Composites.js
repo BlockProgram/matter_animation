@@ -239,50 +239,56 @@ var Bodies = require('./Bodies');
      */
     Composites.car = function(xx, yy, width, height, wheelSize) {
         var group = Body.nextGroup(true),
-            wheelBase = 20,
+            wheelBase = -20,
             wheelAOffset = -width * 0.5 + wheelBase,
             wheelBOffset = width * 0.5 - wheelBase,
             wheelYOffset = 0;
     
         var car = Composite.create({ label: 'Car' }),
-            body = Bodies.rectangle(xx, yy, width, height, { 
+            body = Bodies.trapezoid(xx, yy, width, height, 0.3, { 
                 collisionFilter: {
                     group: group
                 },
+                friction: 0.01,
                 chamfer: {
-                    radius: height * 0.5
-                },
-                density: 0.0002
+                    radius: 10
+                }
             });
     
         var wheelA = Bodies.circle(xx + wheelAOffset, yy + wheelYOffset, wheelSize, { 
             collisionFilter: {
                 group: group
             },
-            friction: 0.8
+            friction: 0.8,
+            density: 0.01
         });
                     
         var wheelB = Bodies.circle(xx + wheelBOffset, yy + wheelYOffset, wheelSize, { 
             collisionFilter: {
                 group: group
             },
-            friction: 0.8
+            friction: 0.8,
+            density: 0.01
         });
                     
         var axelA = Constraint.create({
-            bodyB: body,
-            pointB: { x: wheelAOffset, y: wheelYOffset },
-            bodyA: wheelA,
-            stiffness: 1,
-            length: 0
+            bodyA: body,
+            pointA: { x: wheelAOffset, y: wheelYOffset },
+            bodyB: wheelA,
+            stiffness: 0.2,
+            render: {
+                lineWidth: 0
+            }
         });
                         
         var axelB = Constraint.create({
-            bodyB: body,
-            pointB: { x: wheelBOffset, y: wheelYOffset },
-            bodyA: wheelB,
-            stiffness: 1,
-            length: 0
+            bodyA: body,
+            pointA: { x: wheelBOffset, y: wheelYOffset },
+            bodyB: wheelB,
+            stiffness: 0.2,
+            render: {
+                lineWidth: 0
+            }
         });
         
         Composite.addBody(car, body);
@@ -311,7 +317,7 @@ var Bodies = require('./Bodies');
      */
     Composites.softBody = function(xx, yy, columns, rows, columnGap, rowGap, crossBrace, particleRadius, particleOptions, constraintOptions) {
         particleOptions = Common.extend({ inertia: Infinity }, particleOptions);
-        constraintOptions = Common.extend({ stiffness: 0.2, render: { type: 'line', anchors: false } }, constraintOptions);
+        constraintOptions = Common.extend({ stiffness: 0.4 }, constraintOptions);
 
         var softBody = Composites.stack(xx, yy, columns, rows, columnGap, rowGap, function(x, y) {
             return Bodies.circle(x, y, particleRadius, particleOptions);

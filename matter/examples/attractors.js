@@ -1,15 +1,19 @@
 var Example = Example || {};
 
-Example.concave = function() {
+Matter.use(
+    'matter-gravity', 
+    'matter-wrap'
+);
+
+Example.attractors = function() {
     var Engine = Matter.Engine,
         Render = Matter.Render,
         Runner = Matter.Runner,
-        Composites = Matter.Composites,
+        Body = Matter.Body,
         Common = Matter.Common,
         MouseConstraint = Matter.MouseConstraint,
         Mouse = Matter.Mouse,
         World = Matter.World,
-        Vertices = Matter.Vertices,
         Bodies = Matter.Bodies;
 
     // create engine
@@ -33,31 +37,42 @@ Example.concave = function() {
     Runner.run(runner, engine);
 
     // add bodies
-    World.add(world, [
-        // walls
-        Bodies.rectangle(400, 0, 800, 50, { isStatic: true }),
-        Bodies.rectangle(400, 600, 800, 50, { isStatic: true }),
-        Bodies.rectangle(800, 300, 50, 600, { isStatic: true }),
-        Bodies.rectangle(0, 300, 50, 600, { isStatic: true })
-    ]);
+    world.bodies = [];
+    world.gravity.scale = 0;
 
-    var arrow = Vertices.fromPath('40 0 40 20 100 20 100 80 40 80 40 100 0 50'),
-        chevron = Vertices.fromPath('100 0 75 50 100 100 25 100 0 50 25 0'),
-        star = Vertices.fromPath('50 0 63 38 100 38 69 59 82 100 50 75 18 100 31 59 0 38 37 38'),
-        horseShoe = Vertices.fromPath('35 7 19 17 14 38 14 58 25 79 45 85 65 84 65 66 46 67 34 59 30 44 33 29 45 23 66 23 66 7 53 7');
+    var G = 0.001;
 
-    var stack = Composites.stack(50, 50, 6, 4, 10, 10, function(x, y) {
-        var color = Common.choose(['#556270', '#4ECDC4', '#C7F464', '#FF6B6B', '#C44D58']);
-        return Bodies.fromVertices(x, y, Common.choose([arrow, chevron, star, horseShoe]), {
-            render: {
-                fillStyle: color,
-                strokeStyle: color,
-                lineWidth: 1
+    engine.timing.timeScale = 1.5;
+
+    for (var i = 0; i < 150; i += 1) {
+        var radius = Common.random(6, 10);
+
+        var body = Bodies.circle(
+            Common.random(10, render.options.width), 
+            Common.random(10, render.options.height),
+            radius,
+            {
+                mass: Common.random(10, 15),
+                frictionAir: 0,
+                plugin: {
+                    gravity: G,
+                    wrap: {
+                        min: { x: 0, y: 0 },
+                        max: { x: render.options.width, y: render.options.height }
+                    }
+                }
             }
-        }, true);
-    });
+        );
 
-    World.add(world, stack);
+        var speed = 5;
+
+        Body.setVelocity(body, { 
+            x: Common.random(-speed, speed), 
+            y: Common.random(-speed, speed)
+        });
+
+        World.add(world, body);
+    }
 
     // add mouse control
     var mouse = Mouse.create(render.canvas),

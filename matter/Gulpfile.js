@@ -95,32 +95,17 @@ gulp.task('build:release', function() {
     return build(extend(extend({}, pkg), { version: pkg.version }));
 });
 
-gulp.task('build:examples', function() {
-    var options = extend(extend({}, pkg), { version: pkg.version + '-dev' });
-    options.name = options.name + '-examples';
-    options.date = options.date || new Date().toISOString().slice(0, 10);
-    options.author = '@liabru';
-
-    return gulp.src('examples/**/*.js')
-        .pipe(concat('examples.js'))
-        .pipe(header(banner, { context: options }))
-        .pipe(gulp.dest('examples/build'));
-});
-
 gulp.task('watch', function() {
     var b = browserify({
         entries: ['src/module/main.js'],
         standalone: 'Matter',
-        plugin: [watchify]
+        plugin: [watchify],
+        transform: ['browserify-shim']
     });
 
     var bundle = function() {
         gutil.log('Updated bundle build/matter-dev.js');
         b.bundle()
-            .on('error', function(err) {
-                gutil.log('ERROR', err.message);
-                this.emit('end');
-            })
             .pipe(through2({ objectMode: true }, function(chunk, encoding, callback) {
                 return callback(
                     null, 
@@ -259,7 +244,7 @@ var build = function(options) {
 
     var compiled = gulp.src(['src/module/main.js'])
         .pipe(through2.obj(function(file, enc, next){
-            browserify(file.path, { standalone: 'Matter' })
+            browserify(file.path, { standalone: 'Matter', transform: ['browserify-shim'] })
                 .bundle(function(err, res){
                     file.contents = res;
                     next(null, file);

@@ -4,7 +4,7 @@
 
 [brm.io/matter-js](http://brm.io/matter-js/)
 
-[Demos](#demos) - [Gallery](#gallery) - [Features](#features) - [Plugins](#plugins) - [Install](#install) - [Usage](#usage) - [Examples](#examples) -  [Docs](#documentation) - [Wiki](https://github.com/liabru/matter-js/wiki) - [References](#references) - [License](#license)
+[Demos](#demos) - [Gallery](#gallery) - [Features](#features) - [Install](#install) - [Usage](#usage) - [Examples](#examples) -  [Docs](#documentation) - [Wiki](https://github.com/liabru/matter-js/wiki) - [References](#references) - [License](#license)
 
 [![Build Status](https://travis-ci.org/liabru/matter-js.png?branch=master)](https://travis-ci.org/liabru/matter-js)
 
@@ -97,7 +97,6 @@ See how others are using matter.js physics
 - Constraints
 - Gravity
 - Sleeping and static bodies
-- Plugins
 - Rounded corners (chamfering)
 - Views (translate, zoom)
 - Collision queries (raycasting, region tests)
@@ -105,7 +104,7 @@ See how others are using matter.js physics
 - Canvas renderer (supports vectors and textures)
 - [MatterTools](https://github.com/liabru/matter-tools) for creating, testing and debugging worlds
 - World state serialisation (requires [resurrect.js](https://github.com/skeeto/resurrect-js))
-- Cross-browser and Node.js support (Chrome, Firefox, Safari, IE8+)
+- Cross-browser (Chrome, Firefox, Safari, IE8+)
 - Mobile-compatible (touch, responsive)
 - An original JavaScript physics implementation (not a port)
 
@@ -122,26 +121,13 @@ You can also install using the package managers [Bower](http://bower.io/search/?
 
 ### Usage
 
-Visit the [Getting started](https://github.com/liabru/matter-js/wiki/Getting-started) wiki page for a minimal usage example which should work in both browsers and Node.js.  
-Also see the [Running](https://github.com/liabru/matter-js/wiki/Running) and [Rendering](https://github.com/liabru/matter-js/wiki/Rendering) wiki pages, which show how to use your own game and rendering loops.
-
-### Tutorials
-
-See the list of [tutorials](https://github.com/liabru/matter-js/wiki/Tutorials).
+Visit the [Getting started](https://github.com/liabru/matter-js/wiki/Getting-started) wiki page for a minimal usage example.  
+Also see the [Rendering](https://github.com/liabru/matter-js/wiki/Rendering) wiki page, which also shows how to use your own game loop.
 
 ### Examples
 
 See the [examples](https://github.com/liabru/matter-js/tree/master/examples) directory which contains the source for all [demos](#demos).  
 There are even more examples on [codepen](http://codepen.io/collection/Fuagy/).
-
-### Plugins
-
-The engine can be extended through plugins, see these resources:
-
-- [Using plugins](https://github.com/liabru/matter-js/wiki/Using-plugins)
-- [Creating plugins](https://github.com/liabru/matter-js/wiki/Creating-plugins)
-- [List of plugins](https://github.com/liabru/matter-js/wiki/List-of-plugins)
-- [matter-plugin-boilerplate](https://github.com/liabru/matter-plugin-boilerplate)
 
 ### Documentation
 

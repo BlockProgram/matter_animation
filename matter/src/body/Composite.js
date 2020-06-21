@@ -15,7 +15,6 @@ module.exports = Composite;
 
 var Events = require('../core/Events');
 var Common = require('../core/Common');
-var Bounds = require('../geometry/Bounds');
 var Body = require('./Body');
 
 (function() {
@@ -531,24 +530,6 @@ var Body = require('./Body');
         Composite.setModified(composite, true, true, false);
 
         return composite;
-    };
-
-    /**
-     * Returns the union of the bounds of all of the composite's bodies.
-     * @method bounds
-     * @param {composite} composite The composite.
-     * @returns {bounds} The composite bounds.
-     */
-    Composite.bounds = function(composite) {
-        var bodies = Composite.allBodies(composite),
-            vertices = [];
-
-        for (var i = 0; i < bodies.length; i += 1) {
-            var body = bodies[i];
-            vertices.push(body.bounds.min, body.bounds.max);
-        }
-
-        return Bounds.create(vertices);
     };
 
     /*

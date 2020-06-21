@@ -21,8 +21,8 @@ Example.svg = function() {
         element: document.body,
         engine: engine,
         options: {
-            width: 800,
-            height: 600
+            width: Math.min(document.documentElement.clientWidth, 800),
+            height: Math.min(document.documentElement.clientHeight, 600)
         }
     });
 

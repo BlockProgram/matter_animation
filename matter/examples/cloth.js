@@ -20,8 +20,8 @@ Example.cloth = function() {
         element: document.body,
         engine: engine,
         options: {
-            width: 800,
-            height: 600
+            width: Math.min(document.documentElement.clientWidth, 800),
+            height: Math.min(document.documentElement.clientHeight, 600)
         }
     });
 
@@ -34,8 +34,7 @@ Example.cloth = function() {
     // add bodies
     var group = Body.nextGroup(true),
         particleOptions = { friction: 0.00001, collisionFilter: { group: group }, render: { visible: false }},
-        constraintOptions = { stiffness: 0.06 },
-        cloth = Composites.softBody(200, 200, 20, 12, 5, 5, false, 8, particleOptions, constraintOptions);
+        cloth = Composites.softBody(200, 200, 20, 12, 5, 5, false, 8, particleOptions);
 
     for (var i = 0; i < 20; i++) {
         cloth.bodies[i].isStatic = true;

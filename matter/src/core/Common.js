@@ -12,7 +12,6 @@ module.exports = Common;
 
     Common._nextId = 0;
     Common._seed = 0;
-    Common._nowStartTime = +(new Date());
 
     /**
      * Extends the object in the first argument using the object in the second argument.
@@ -143,6 +142,25 @@ module.exports = Common;
     };
 
     /**
+     * Returns a hex colour string made by lightening or darkening color by percent.
+     * @method shadeColor
+     * @param {string} color
+     * @param {number} percent
+     * @return {string} A hex colour
+     */
+    Common.shadeColor = function(color, percent) {   
+        // http://stackoverflow.com/questions/5560248/programmatically-lighten-or-darken-a-hex-color
+        var colorInteger = parseInt(color.slice(1),16), 
+            amount = Math.round(2.55 * percent), 
+            R = (colorInteger >> 16) + amount, 
+            B = (colorInteger >> 8 & 0x00FF) + amount, 
+            G = (colorInteger & 0x0000FF) + amount;
+        return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R :255) * 0x10000 
+                + (B < 255 ? B < 1 ? 0 : B : 255) * 0x100 
+                + (G < 255 ? G < 1 ? 0 : G : 255)).toString(16).slice(1);
+    };
+
+    /**
      * Shuffles the given array in-place.
      * The function uses a seeded random generator.
      * @method shuffle
@@ -177,11 +195,15 @@ module.exports = Common;
      * @return {boolean} True if the object is a HTMLElement, otherwise false
      */
     Common.isElement = function(obj) {
-        if (typeof HTMLElement !== 'undefined') {
+        // http://stackoverflow.com/questions/384286/javascript-isdom-how-do-you-check-if-a-javascript-object-is-a-dom-object
+        try {
             return obj instanceof HTMLElement;
         }
-
-        return !!(obj && obj.nodeType && obj.nodeName);
+        catch(e){
+            return (typeof obj==="object") &&
+              (obj.nodeType===1) && (typeof obj.style === "object") &&
+              (typeof obj.ownerDocument ==="object");
+        }
     };
 
     /**
@@ -251,21 +273,26 @@ module.exports = Common;
     };
     
     /**
-     * Returns the current timestamp since the time origin (e.g. from page load).
-     * The result will be high-resolution including decimal places if available.
+     * Returns the current timestamp (high-res if available).
      * @method now
-     * @return {number} the current timestamp
+     * @return {number} the current timestamp (high-res if available)
      */
     Common.now = function() {
-        if (window.performance) {
-            if (window.performance.now) {
-                return window.performance.now();
-            } else if (window.performance.webkitNow) {
-                return window.performance.webkitNow();
-            }
-        }
+        // http://stackoverflow.com/questions/221294/how-do-you-get-a-timestamp-in-javascript
+        // https://gist.github.com/davidwaterston/2982531
 
-        return (new Date()) - Common._nowStartTime;
+        var performance = window.performance || {};
+
+        performance.now = (function() {
+            return performance.now    ||
+            performance.webkitNow     ||
+            performance.msNow         ||
+            performance.oNow          ||
+            performance.mozNow        ||
+            function() { return +(new Date()); };
+        })();
+              
+        return performance.now();
     };
     
     /**
@@ -283,7 +310,7 @@ module.exports = Common;
     };
 
     var _seededRandom = function() {
-        // https://en.wikipedia.org/wiki/Linear_congruential_generator
+        // https://gist.github.com/ngryman/3830489
         Common._seed = (Common._seed * 9301 + 49297) % 233280;
         return Common._seed / 233280;
     };
@@ -415,23 +442,21 @@ module.exports = Common;
      * @return {array} Partially ordered set of vertices in topological order.
      */
     Common.topologicalSort = function(graph) {
-        // https://github.com/mgechev/javascript-algorithms
-        // Copyright (c) Minko Gechev (MIT license)
-        // Modifications: tidy formatting and naming
+        // https://mgechev.github.io/javascript-algorithms/graphs_others_topological-sort.js.html
         var result = [],
             visited = [],
             temp = [];
 
         for (var node in graph) {
             if (!visited[node] && !temp[node]) {
-                Common._topologicalSort(node, visited, temp, graph, result);
+                _topologicalSort(node, visited, temp, graph, result);
             }
         }
 
         return result;
     };
 
-    Common._topologicalSort = function(node, visited, temp, graph, result) {
+    var _topologicalSort = function(node, visited, temp, graph, result) {
         var neighbors = graph[node] || [];
         temp[node] = true;
 
@@ -444,7 +469,7 @@ module.exports = Common;
             }
 
             if (!visited[neighbor]) {
-                Common._topologicalSort(neighbor, visited, temp, graph, result);
+                _topologicalSort(neighbor, visited, temp, graph, result);
             }
         }
 
@@ -536,18 +561,4 @@ module.exports = Common;
         ));
     };
 
-    /**
-     * Used to require external libraries outside of the bundle.
-     * It first looks for the `globalName` on the environment's global namespace.
-     * If the global is not found, it will fall back to using the standard `require` using the `moduleName`.
-     * @private
-     * @method _requireGlobal
-     * @param {string} globalName The global module name
-     * @param {string} moduleName The fallback CommonJS module name
-     * @return {} The loaded module
-     */
-    Common._requireGlobal = function(globalName, moduleName) {
-        var obj = (typeof window !== 'undefined' ? window[globalName] : typeof global !== 'undefined' ? global[globalName] : null);
-        return obj || require(moduleName);
-    };
 })();

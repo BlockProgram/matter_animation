@@ -22,8 +22,8 @@ Example.bridge = function() {
         element: document.body,
         engine: engine,
         options: {
-            width: 800,
-            height: 600,
+            width: Math.min(document.documentElement.clientWidth, 800),
+            height: Math.min(document.documentElement.clientHeight, 600),
             showAngleIndicator: true
         }
     });
@@ -37,55 +37,23 @@ Example.bridge = function() {
     // add bodies
     var group = Body.nextGroup(true);
 
-    var bridge = Composites.stack(160, 290, 15, 1, 0, 0, function(x, y) {
-        return Bodies.rectangle(x - 20, y, 53, 20, { 
-            collisionFilter: { group: group },
-            chamfer: 5,
-            density: 0.005,
-            frictionAir: 0.05,
-            render: {
-                fillStyle: '#575375'
-            }
-        });
+    var bridge = Composites.stack(150, 300, 9, 1, 10, 10, function(x, y) {
+        return Bodies.rectangle(x, y, 50, 20, { collisionFilter: { group: group } });
     });
     
-    Composites.chain(bridge, 0.3, 0, -0.3, 0, { 
-        stiffness: 1,
-        length: 0,
-        render: {
-            visible: false
-        }
-    });
+    Composites.chain(bridge, 0.5, 0, -0.5, 0, { stiffness: 0.9 });
     
-    var stack = Composites.stack(250, 50, 6, 3, 0, 0, function(x, y) {
-        return Bodies.rectangle(x, y, 50, 50, Common.random(20, 40));
+    var stack = Composites.stack(200, 40, 6, 3, 0, 0, function(x, y) {
+        return Bodies.polygon(x, y, Math.round(Common.random(1, 8)), Common.random(20, 40));
     });
 
     World.add(world, [
         bridge,
-        stack,
-        Bodies.rectangle(30, 490, 220, 380, { 
-            isStatic: true, 
-            chamfer: { radius: 20 }
-        }),
-        Bodies.rectangle(770, 490, 220, 380, { 
-            isStatic: true, 
-            chamfer: { radius: 20 }
-        }),
-        Constraint.create({ 
-            pointA: { x: 140, y: 300 }, 
-            bodyB: bridge.bodies[0], 
-            pointB: { x: -25, y: 0 },
-            length: 2,
-            stiffness: 0.9
-        }),
-        Constraint.create({ 
-            pointA: { x: 660, y: 300 }, 
-            bodyB: bridge.bodies[bridge.bodies.length - 1], 
-            pointB: { x: 25, y: 0 },
-            length: 2,
-            stiffness: 0.9
-        })
+        Bodies.rectangle(80, 440, 120, 280, { isStatic: true }),
+        Bodies.rectangle(720, 440, 120, 280, { isStatic: true }),
+        Constraint.create({ pointA: { x: 140, y: 300 }, bodyB: bridge.bodies[0], pointB: { x: -25, y: 0 } }),
+        Constraint.create({ pointA: { x: 660, y: 300 }, bodyB: bridge.bodies[8], pointB: { x: 25, y: 0 } }),
+        stack
     ]);
 
     // add mouse control
@@ -93,7 +61,7 @@ Example.bridge = function() {
         mouseConstraint = MouseConstraint.create(engine, {
             mouse: mouse,
             constraint: {
-                stiffness: 0.1,
+                stiffness: 0.2,
                 render: {
                     visible: false
                 }

@@ -21,8 +21,8 @@ Example.collisionFiltering = function() {
         element: document.body,
         engine: engine,
         options: {
-            width: 800,
-            height: 600,
+            width: Math.min(document.documentElement.clientWidth, 800),
+            height: Math.min(document.documentElement.clientHeight, 600),
             wireframes: false,
             background: '#111'
         }
@@ -87,6 +87,7 @@ Example.collisionFiltering = function() {
                 mask: defaultCategory | greenCategory
             },
             render: {
+                strokeStyle: Common.shadeColor(greenColor, -20),
                 fillStyle: greenColor
             }
         })
@@ -99,6 +100,7 @@ Example.collisionFiltering = function() {
                 mask: defaultCategory | redCategory
             },
             render: {
+                strokeStyle: Common.shadeColor(redColor, -20),
                 fillStyle: redColor
             }
         })
@@ -111,6 +113,7 @@ Example.collisionFiltering = function() {
                 mask: defaultCategory | blueCategory
             },
             render: {
+                strokeStyle: Common.shadeColor(blueColor, -20),
                 fillStyle: blueColor
             }
         })

@@ -13,7 +13,7 @@ var Common = require('../core/Common');
 
 (function() {
     
-    Pairs._pairMaxIdleLife = 1000;
+    var _pairMaxIdleLife = 1000;
 
     /**
      * Creates a new pairs structure.
@@ -124,7 +124,7 @@ var Common = require('../core/Common');
             }
 
             // if pair is inactive for too long, mark it to be removed
-            if (timestamp - pair.timeUpdated > Pairs._pairMaxIdleLife) {
+            if (timestamp - pair.timeUpdated > _pairMaxIdleLife) {
                 indexesToRemove.push(i);
             }
         }
